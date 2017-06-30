@@ -1,0 +1,21 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.tietotest.voice"
+        },
+        "cordova-plugin-apiai": {
+            "PACKAGE_NAME": "com.tietotest.voice"
+        },
+        "cordova-plugin-tts": {
+            "PACKAGE_NAME": "com.tietotest.voice"
+        }
+    },
+    "dependent_plugins": {}
+}

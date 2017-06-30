@@ -1,0 +1,28 @@
+{
+    "name": "com.tietotest.voice",
+    "displayName": "VoiceTest",
+    "version": "1.0.0",
+    "description": "A sample Apache Cordova application that responds to the deviceready event.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Apache Cordova Team",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "cordova-android": "^6.2.3",
+        "cordova-plugin-apiai": "^1.7.4",
+        "cordova-plugin-tts": "^0.2.3",
+        "cordova-plugin-whitelist": "^1.3.2"
+    },
+    "cordova": {
+        "plugins": {
+            "cordova-plugin-whitelist": {},
+            "cordova-plugin-apiai": {},
+            "cordova-plugin-tts": {}
+        },
+        "platforms": [
+            "android"
+        ]
+    }
+}
