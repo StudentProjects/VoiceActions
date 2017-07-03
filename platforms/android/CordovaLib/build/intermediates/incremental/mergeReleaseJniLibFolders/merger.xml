@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="C:\Users\HALLKALI\Documents\VSCode\VoiceActions\platforms\android\CordovaLib\src\main\jniLibs"/></dataSet><dataSet config="release"><source path="C:\Users\HALLKALI\Documents\VSCode\VoiceActions\platforms\android\CordovaLib\src\release\jniLibs"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="C:\Users\halvajon\Documents\VSCode\VoiceCoolApp\voice\platforms\android\CordovaLib\src\main\jniLibs"/></dataSet><dataSet config="release"><source path="C:\Users\halvajon\Documents\VSCode\VoiceCoolApp\voice\platforms\android\CordovaLib\src\release\jniLibs"/></dataSet></merger>
