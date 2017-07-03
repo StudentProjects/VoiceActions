@@ -61,4 +61,4 @@ typings/
 .vscode
 
 # android
-#platforms/android
+platforms/android
