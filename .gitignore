@@ -60,11 +60,5 @@ typings/
 # VSCode folder
 .vscode
 
-# gradle
-#platforms/android/.gradle/
-
-# cordovalib
-#platforms/android/CordovaLib/
-
-# plugins
-#plugins/
+# android
+platforms/android
