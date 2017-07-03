@@ -26,6 +26,7 @@ app.onDeviceReady = function() {
     ApiAIPlugin.init(
         {
             clientAccessToken: "cb0d6579d6fc46cc87b23317386aecd0", // insert your client access key here 
+            clientAccessToken: "21089ec943e2460eb655d53fd5733e1b",  // Alice token
             lang: "en" // set lang tag from list of supported languages 
         }, 
         function(result) { /* success processing */ },
