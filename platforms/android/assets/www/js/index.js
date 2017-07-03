@@ -43,7 +43,7 @@ app.onDeviceReady = function() {
                             text: response.result.fulfillment.speech,
                             locale: 'en-US',
                         }, function () {
-                            //alert(response.result.fulfillment.speech);
+                            console.log(response.result.resolvedQuery + " " + response.result.fulfillment.speech);
                         }, function (reason) {
                             alert(reason);
                         });
