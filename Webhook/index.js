@@ -1,20 +1,40 @@
-//const ApiAiApp = require('actions-on-google').ApiAiApp;
+const ApiAiApp = require('actions-on-google').ApiAiApp;
 
 exports.responseHandler = function responseHandler (req, res) {
-  //const application = new ApiAiApp({request: req, response: res});
+  const application = new ApiAiApp({request: req, response: res});
 
-  //let intent = application.getIntent();
+  const TEST_INTENT = "hooktest.hello";
+  const TIME_INTENT = "time.get";
+  const TEST_TEST = "test.test";
+
+  let intent = application.getIntent();
+  let response = "BIG ERROR";
+
+  //let intent = req.body.result.metadata.intentName;
   //let response = "You called intent: " + intent;
 
-  let intent = req.body.result.metadata.intentName;
-  let response = "You called intent: " + intent;
+  switch (intent){
+    case TEST_INTENT:
+      response = "This is a sample response from your webhook!";
+      break;
+    case TIME_INTENT:
+      response = "The time is: " + new Date().toLocaleTimeString('sv-SE');
+      break;
+    case TEST_TEST:
+      response = application.getArgument("name") + " is " + Math.random() + "cm long";
+      //response = "LONG";
+      break;
+    default:
+      response = "DEFAULT CASE";
+      break;
+  }
 
-  //response = "This is a sample response from your webhook!"; //Default response from the webhook to show it's working
-  //response = "The time is: " + new Date().toLocaleTimeString('sv-SE');
-
-  res.setHeader('Content-Type', 'application/json'); //Requires application/json MIME type
-  res.send(JSON.stringify({ 
-      "speech": response, 
-      "displayText": response
-    }));
+  application.tell(response);
+  //application.ask(response);
+  
+  //res.setHeader('Content-Type', 'application/json'); //Requires application/json MIME type
+  //res.send(JSON.stringify({ 
+  //    "speech": response, 
+  //    "displayText": response
+  //  }));
 };
