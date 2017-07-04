@@ -21,8 +21,7 @@ exports.responseHandler = function responseHandler (req, res) {
       response = "The time is: " + new Date().toLocaleTimeString('sv-SE');
       break;
     case TEST_TEST:
-      response = application.getArgument("name") + " is " + Math.random() + "cm long";
-      //response = "LONG";
+      response = application.getArgument("name") + " is " + Math.trunc(Math.random()*1000)/100 + "m long";
       break;
     default:
       response = "DEFAULT CASE";
