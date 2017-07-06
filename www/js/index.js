@@ -25,8 +25,7 @@ app.initialize = function() {
 app.onDeviceReady = function() {
     ApiAIPlugin.init(
         {
-            clientAccessToken: "cb0d6579d6fc46cc87b23317386aecd0", // Jonas token  
-            //clientAccessToken: "21089ec943e2460eb655d53fd5733e1b",  // Alice token
+            clientAccessToken: "2cf08909d19c476ab37067ae11e2dfe7",
             lang: "en" // set lang tag from list of supported languages 
         }, 
         function(result) { /* success processing */ },
