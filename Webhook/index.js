@@ -21,8 +21,12 @@ exports.schoolAgent = function schoolAgent (req, res) {
 
   const TEST_PROMPTS = ["This is a smaple response from your webhook!", "You are now connected to the webhook!", "This is the webhook speaking :)"];
   const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Who is ill?", "Who is the poor sick bastard?"];
+  const ILLNESS_PROMPT_ENDING = " now ill. Is that right?";
+  const YES_REGISTERED_PROMPTS = ["Awesome! I've taken care of that now. Was there anything else?"];
+  const NO_REGISTERED_CORRECTION_PROMPTS = ["So *with new changes*. Is that right?"];
+  const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What would you like to change?"];
 
-  const NO_INPUT_PROMPTS = ["What was that?", "What was that?", "What was that?"];
+  const NO_INPUT_PROMPTS = ["What was that?1", "What was that?2", "What was that?3"];
   const SICK_NO_INPUT_PROMPTS = ["Are you gonna call someone in sick or what??", "Have I gone deaf or you mute?", "Goodbye you didn't say anything"];
 
   let actionMap = new Map();
@@ -77,15 +81,17 @@ exports.schoolAgent = function schoolAgent (req, res) {
 
   function getHelp(){
     console.log('getHelp');
-    tell(app, "I can't help you, thihi")
+    tell(app, "I can't help you, thihi");
   }
 
   function yesReg(){
-
+    console.log('yesReg');
+    ask(app, getRandomPrompt(app, YES_REGISTERED_PROMPTS), NO_INPUT_PROMPTS);
   }
 
   function noReg(){
-
+    console.log('noReg');
+    ask(app, getRandomPrompt(app, NO_REGISTERED_NO_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
   }
 
   /***INTERNAL FUNCTIONS***/
@@ -109,7 +115,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
           prompt += " is";
         }
       }
-      prompt += " now ill. Is that right?";
+      prompt += ILLNESS_PROMPT_ENDING;
       return prompt;
   }
 
