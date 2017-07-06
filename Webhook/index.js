@@ -67,13 +67,11 @@ exports.schoolAgent = function schoolAgent (req, res) {
     else{
       let prompt = buildIllnessPrompt(names, nameLen);
       app.setContext(REGISTER_YES_NO_CONTEXT);
-      if(date){
-        ask(app, prompt, NO_INPUT_PROMPTS);
+      if(!date){
+        date = "today";
       }
 
-      
-      
-      ask(app, prompt);
+      ask(app, prompt, NO_INPUT_PROMPTS);
     }
   }
 
@@ -83,7 +81,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
   }
 
   function yesReg(){
-    
+
   }
 
   function noReg(){
@@ -111,7 +109,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
           prompt += " is";
         }
       }
-      prompt += " now ill.";
+      prompt += " now ill. Is that right?";
       return prompt;
   }
 
