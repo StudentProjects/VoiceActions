@@ -20,8 +20,8 @@ exports.schoolAgent = function schoolAgent (req, res) {
   const REGISTER_YES_NO_CONTEXT = "register_yes_no";
 
   const TEST_PROMPTS = ["This is a smaple response from your webhook!", "You are now connected to the webhook!", "This is the webhook speaking :)"];
+  const HELP_PROMPTS = ["You could check out what's going on at the school the week!", "Some cool stuff is happpening, take a look at the news!"];
   const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Who is ill?", "Who is the poor sick bastard?"];
-  const ILLNESS_PROMPT_ENDING = " now ill. Is that right?";
   const YES_REGISTERED_PROMPTS = ["Awesome! I've taken care of that now. Was there anything else?"];
   const NO_REGISTERED_CORRECTION_PROMPTS = ["So *with new changes*. Is that right?"];
   const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What would you like to change?"];
@@ -42,7 +42,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
   /***INTENT FUNCTIONS***/
   function getSample(){
     console.log('getSample');
-    let prompt = getRandomPrompt(app, TEST_PROMPTS);
+    let prompt = getRandomPrompt(TEST_PROMPTS);
     ask(app, prompt);
   }
 
@@ -63,39 +63,50 @@ exports.schoolAgent = function schoolAgent (req, res) {
  
     let names = app.getArgument('given-name');
     let nameLen = names.length;
-    let date = app.getArgument('date');
 
     if(nameLen == 0){
-      ask(app, getRandomPrompt(app, ILLNESS_ASK_FOR_NAME_PROMPTS), SICK_NO_INPUT_PROMPTS);
+      ask(app, getRandomPrompt(ILLNESS_ASK_FOR_NAME_PROMPTS), SICK_NO_INPUT_PROMPTS);
+      return;
     }
     else{
-      let prompt = buildIllnessPrompt(names, nameLen);
-      app.setContext(REGISTER_YES_NO_CONTEXT);
+      let date = req.body.result.fulfillment.speech;
+      //let date = app.getArgument('date-time');
       if(!date){
         date = "today";
       }
 
+      let prompt = buildIllnessPrompt(names, nameLen, date);
+      app.setContext(REGISTER_YES_NO_CONTEXT);
       ask(app, prompt, NO_INPUT_PROMPTS);
+      return;
     }
   }
 
   function getHelp(){
     console.log('getHelp');
-    tell(app, "I can't help you, thihi");
+    tell(app, getRandomPrompt(HELP_PROMPTS));
   }
 
   function yesReg(){
     console.log('yesReg');
-    ask(app, getRandomPrompt(app, YES_REGISTERED_PROMPTS), NO_INPUT_PROMPTS);
+    ask(app, getRandomPrompt(YES_REGISTERED_PROMPTS), NO_INPUT_PROMPTS);
   }
 
   function noReg(){
     console.log('noReg');
-    ask(app, getRandomPrompt(app, NO_REGISTERED_NO_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
+
+    let names = app.getArgument('given-name');
+
+    if(names){
+      ask(app, getRandomPrompt(NO_REGISTERED_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
+    }
+    else{
+      ask(app, getRandomPrompt(NO_REGISTERED_NO_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
+    }
   }
 
   /***INTERNAL FUNCTIONS***/
-  function buildIllnessPrompt(names, nameLen){
+  function buildIllnessPrompt(names, nameLen, date){
     let prompt = "";
       for(var i = 0 ; i < nameLen ; i++){
         prompt += names[i];
@@ -115,18 +126,13 @@ exports.schoolAgent = function schoolAgent (req, res) {
           prompt += " is";
         }
       }
-      prompt += ILLNESS_PROMPT_ENDING;
+      prompt += " ill " + date + ". ";
+      prompt += "Is that right?";
       return prompt;
   }
 
-  function getRandomPrompt(app, array, persist){
-    let lastPrompt = app.data.lastPrompt;
-    let prompt = "";
-    
-    do{
-      prompt = array[Math.floor(Math.random() * (array.length))];
-    } while(persist && lastPrompt === prompt && array.length > 1);
-
+  function getRandomPrompt(array){
+    let prompt = array[Math.floor(Math.random() * (array.length))];
     return prompt;
   }
 
