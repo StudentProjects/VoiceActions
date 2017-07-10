@@ -15,6 +15,8 @@ exports.schoolAgent = function schoolAgent (req, res) {
   const HELP_INTENT = "help.get";
   const YES_REGISTER_INTENT = "illness.yes";
   const NO_REGISTER_INTENT = "illness.no";
+  //const NEWS_INTENT = "news.get";
+  const GOODBYE_INTENT = "goodbye.message"
 
   const REGISTRATION_CONTEXT = "registration";
   const REGISTER_YES_NO_CONTEXT = "register_yes_no";
@@ -25,6 +27,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
   const YES_REGISTERED_PROMPTS = ["Awesome! I've taken care of that now. Was there anything else?"];
   const NO_REGISTERED_CORRECTION_PROMPTS = ["So *with new changes*. Is that right?"];
   const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What would you like to change?"];
+  const GOODBYE_PROMPTS = ["Goodbye!", "Have a good day!", "Have a nice day!"];
 
   const NO_INPUT_PROMPTS = ["What was that?1", "What was that?2", "What was that?3"];
   const SICK_NO_INPUT_PROMPTS = ["Are you gonna call someone in sick or what??", "Have I gone deaf or you mute?", "Goodbye you didn't say anything"];
@@ -37,6 +40,8 @@ exports.schoolAgent = function schoolAgent (req, res) {
   actionMap.set(HELP_INTENT, getHelp);
   actionMap.set(YES_REGISTER_INTENT, yesReg);
   actionMap.set(NO_REGISTER_INTENT, noReg);
+  actionMap.set(GOODBYE_INTENT, goodbyeMessage);
+  //actionMap.set(NEWS_INTENT, getNews);
   app.handleRequest(actionMap);
 
   /***INTENT FUNCTIONS***/
@@ -103,6 +108,13 @@ exports.schoolAgent = function schoolAgent (req, res) {
     else{
       ask(app, getRandomPrompt(NO_REGISTERED_NO_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
     }
+  }
+  //function getNews(){
+  //  tell(app, "Something cool is happening on friday!!");
+  //}
+  function goodbyeMessage(){
+    console.log('goodbyeMessage');
+    tell(app, getRandomPrompt(GOODBYE_PROMPTS));
   }
 
   /***INTERNAL FUNCTIONS***/
