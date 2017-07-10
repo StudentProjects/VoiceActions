@@ -17,14 +17,14 @@ exports.schoolAgent = function schoolAgent (req, res) {
   const NO_REGISTER_INTENT = "illness.no";
   const NEWS_INTENT = "news.get";
 
-  const REGISTRATION_CONTEXT = "registration";
+  //const REGISTRATION_CONTEXT = "registration";
   const REGISTER_YES_NO_CONTEXT = "register_yes_no";
 
   const TEST_PROMPTS = ["This is a smaple response from your webhook!", "You are now connected to the webhook!", "This is the webhook speaking :)"];
   const HELP_PROMPTS = ["You could check out what's going on at the school the week!", "Some cool stuff is happpening, take a look at the news!"];
   const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Who is ill?", "Who is the poor sick bastard?"];
   const YES_REGISTERED_PROMPTS = ["Awesome! I've taken care of that now. Was there anything else?"];
-  const NO_REGISTERED_CORRECTION_PROMPTS = ["So *with new changes*. Is that right?"];
+  //const NO_REGISTERED_CORRECTION_PROMPTS = ["So *with new changes*. Is that right?"];
   const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What would you like to change?"];
 
   const NO_INPUT_PROMPTS = ["What was that?1", "What was that?2", "What was that?3"];
@@ -78,7 +78,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
       }
 
       let prompt = buildIllnessPrompt(names, nameLen, date);
-      app.setContext(REGISTER_YES_NO_CONTEXT);
+      //app.setContext(REGISTER_YES_NO_CONTEXT);
       ask(app, prompt, NO_INPUT_PROMPTS);
       return;
     }
@@ -97,14 +97,31 @@ exports.schoolAgent = function schoolAgent (req, res) {
   function noReg(){
     console.log('noReg');
 
-    let names = app.getArgument('given-name');
+    let names = app.getArgument('given-name-no');
+    let nameLen = names.length;
+    let date = app.getArgument('date-time-no');
 
-    if(names){
-      ask(app, getRandomPrompt(NO_REGISTERED_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
-    }
-    else{
+    if(!date && nameLen == 0){
       ask(app, getRandomPrompt(NO_REGISTERED_NO_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
+      return;
     }
+
+    if(date && nameLen > 0){
+      let prompt = buildIllnessPrompt(names, nameLen, date);
+      ask(app, prompt, NO_INPUT_PROMPTS);
+      return;
+    }
+
+    if(!date){
+      date = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'date-time').original;
+    }
+    if(nameLen == 0){
+      names = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'given-name').value;
+    }
+
+    let prompt = buildIllnessPrompt(names, nameLen, date);
+
+    ask(app, prompt, NO_INPUT_PROMPTS);
   }
   
   function getNews(){
