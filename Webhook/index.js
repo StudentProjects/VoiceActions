@@ -24,7 +24,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
   const ILLNESS_PROMPT_STARTS = ["I'll make a note that "];
   const ILLNESS_PROMPT_ENDS = ["Is that right?", "Was that right?"];
   const YES_REGISTERED_PROMPTS = ["I've taken care of that now. Was there anything else?", "I've made a note of that. Did you want to do anything else?"];
-  const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What would you like to change?", "What did I get wrong?"];
+  const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What should I have put down?", "What would you have me put down instead?"];
   const NEWS_PROMPTS = ["Something cool is happening on friday, stay tuned!", "Mrs. Teacherson has been promoted to headmistress.", "Your kids have a bake-sale coming up this Saturday."];
   const GOODBYE_PROMPTS = ["Goodbye!", "Have a good day then!", "Have a nice day!"];
 
