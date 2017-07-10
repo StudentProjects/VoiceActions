@@ -160,7 +160,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
       }
     }
 
-    prompt += " ill" + date + ". ";
+    prompt += " ill " + date + ". ";
     prompt += getRandomPrompt(ILLNESS_PROMPT_ENDS);
     return prompt;
   }
