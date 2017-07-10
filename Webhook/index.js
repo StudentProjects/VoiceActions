@@ -1,6 +1,4 @@
 const ApiAiApp = require('actions-on-google').ApiAiApp;
-const children = ["Erik", "Jonas", "Alice"];
-const news = {};
 
 exports.schoolAgent = function schoolAgent (req, res) {
   console.log('Headers: ' + JSON.stringify(req.headers));
@@ -18,15 +16,14 @@ exports.schoolAgent = function schoolAgent (req, res) {
   const GOODBYE_INTENT = "goodbye.message"
   const NEWS_INTENT = "news.get";
 
-  //const REGISTRATION_CONTEXT = "registration";
   const REGISTER_YES_NO_CONTEXT = "register_yes_no";
 
   const TEST_PROMPTS = ["This is a smaple response from your webhook!", "You are now connected to the webhook!", "This is the webhook speaking :)"];
-  const HELP_PROMPTS = ["You could check out what's going on at the school the week!", "Some cool stuff is happpening, take a look at the news!"];
+  const HELP_PROMPTS = ["Try checking out the news at the school this week or maybe one of your kids needs to be called in sick."];
   const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Who is ill?", "Who is the poor sick bastard?"];
   const YES_REGISTERED_PROMPTS = ["Awesome! I've taken care of that now. Was there anything else?"];
-  //const NO_REGISTERED_CORRECTION_PROMPTS = ["So *with new changes*. Is that right?"];
   const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What would you like to change?"];
+  const NEWS_PROMPTS = ["Something cool is happening on friday!!", "Mrs. Teacherson has been promoted to headmistress."];
   const GOODBYE_PROMPTS = ["Goodbye!", "Have a good day!", "Have a nice day!"];
 
   const NO_INPUT_PROMPTS = ["What was that?1", "What was that?2", "What was that?3"];
@@ -75,13 +72,12 @@ exports.schoolAgent = function schoolAgent (req, res) {
     }
     else{
       let date = "today";
-      //let date = app.getArgument('date-time');
-      if(req.body.result.fulfillment.speech){
-        date = req.body.result.fulfillment.speech;
+      
+      if(app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'date-time')){
+        date = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'date-time').original;
       }
 
       let prompt = buildIllnessPrompt(names, nameLen, date);
-      //app.setContext(REGISTER_YES_NO_CONTEXT);
       ask(app, prompt, NO_INPUT_PROMPTS);
       return;
     }
@@ -89,7 +85,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
 
   function getHelp(){
     console.log('getHelp');
-    tell(app, getRandomPrompt(HELP_PROMPTS));
+    ask(app, getRandomPrompt(HELP_PROMPTS), NO_INPUT_PROMPTS);
   }
 
   function yesReg(){
@@ -102,7 +98,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
 
     let names = app.getArgument('given-name-no');
     let nameLen = names.length;
-    let date = app.getArgument('date-time-no');
+    let date = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'date-time-no');
 
     if(!date && nameLen == 0){
       ask(app, getRandomPrompt(NO_REGISTERED_NO_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
@@ -110,7 +106,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
     }
 
     if(date && nameLen > 0){
-      let prompt = buildIllnessPrompt(names, nameLen, date);
+      let prompt = buildIllnessPrompt(names, nameLen, date.original);
       ask(app, prompt, NO_INPUT_PROMPTS);
       return;
     }
@@ -118,8 +114,10 @@ exports.schoolAgent = function schoolAgent (req, res) {
     if(!date){
       date = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'date-time').original;
     }
-    if(nameLen == 0){
+    else if(nameLen == 0){
       names = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'given-name').value;
+      nameLen = names.length;
+      date = date.original;
     }
 
     let prompt = buildIllnessPrompt(names, nameLen, date);
@@ -129,7 +127,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
   
   function getNews(){
     console.log("getNews");
-    tell(app, "Something cool is happening on friday!!");
+    ask(app, getRandomPrompt(NEWS_PROMPTS), NO_INPUT_PROMPTS);
   }
   
   function goodbyeMessage(){
