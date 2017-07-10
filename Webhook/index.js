@@ -19,8 +19,8 @@ exports.schoolAgent = function schoolAgent (req, res) {
   const REGISTER_YES_NO_CONTEXT = "register_yes_no";
 
   const TEST_PROMPTS = ["This is a smaple response from your webhook!", "You are now connected to the webhook!", "This is the webhook speaking :)"];
-  const HELP_PROMPTS = ["Try checking out the news at the school this week or maybe one of your kids needs to be called in sick."];
-  const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Of course, who is ill?", "Who is the poor sick bastard?", "Sorry to hear that. Who would you like to call in sick?"];
+  const HELP_PROMPTS = ["<speak>Try checking out the news at the school this week <break time='1s' /> or maybe one of your kids needs to be called in sick.</speak>"];
+  const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Of course, who is ill?", "Sorry to hear that. Who would you like to call in sick?"];
   const ILLNESS_PROMPT_STARTS = ["I'll make a note that "];
   const ILLNESS_PROMPT_ENDS = ["Is that right?", "Was that right?"];
   const YES_REGISTERED_PROMPTS = ["I've taken care of that now. Was there anything else?", "I've made a note of that. Did you want to do anything else?"];
