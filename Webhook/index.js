@@ -115,7 +115,13 @@ exports.schoolAgent = function schoolAgent (req, res) {
     }
 
     if(!date){
-      date = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'date-time').original;
+      date = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'date-time');
+      if(!date){
+        date = "today";
+      }
+      else{
+        date = date.original;
+      }
     }
     else if(nameLen == 0){
       names = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'given-name').value;
