@@ -15,6 +15,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
   const HELP_INTENT = "help.get";
   const YES_REGISTER_INTENT = "illness.yes";
   const NO_REGISTER_INTENT = "illness.no";
+  const NEWS_INTENT = "news.get";
 
   const REGISTRATION_CONTEXT = "registration";
   const REGISTER_YES_NO_CONTEXT = "register_yes_no";
@@ -37,6 +38,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
   actionMap.set(HELP_INTENT, getHelp);
   actionMap.set(YES_REGISTER_INTENT, yesReg);
   actionMap.set(NO_REGISTER_INTENT, noReg);
+  actionMap.set(NEWS_INTENT, getNews);
   app.handleRequest(actionMap);
 
   /***INTENT FUNCTIONS***/
@@ -69,10 +71,10 @@ exports.schoolAgent = function schoolAgent (req, res) {
       return;
     }
     else{
-      let date = req.body.result.fulfillment.speech;
+      let date = "today";
       //let date = app.getArgument('date-time');
-      if(!date){
-        date = "today";
+      if(req.body.result.fulfillment.speech){
+        date = req.body.result.fulfillment.speech;
       }
 
       let prompt = buildIllnessPrompt(names, nameLen, date);
@@ -103,6 +105,11 @@ exports.schoolAgent = function schoolAgent (req, res) {
     else{
       ask(app, getRandomPrompt(NO_REGISTERED_NO_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
     }
+  }
+  
+  function getNews(){
+    console.log("getNews");
+    tell(app, "Something cool is happening on friday!!");
   }
 
   /***INTERNAL FUNCTIONS***/
