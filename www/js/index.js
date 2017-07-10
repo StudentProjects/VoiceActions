@@ -38,7 +38,7 @@ app.onDeviceReady = function() {
                 {}, // empty for simple requests, some optional parameters can be here 
                 function (response) {
                     // place your result processing here
-                    document.getElementById("resp").innerHTML = response.result.fulfillment.speech;
+                    document.getElementById("resp").innerHTML = response.result.resolvedQuery + '\n' + response.result.fulfillment.speech;
                     TTS.speak({
                             text: response.result.fulfillment.speech,
                             locale: 'en-US',
