@@ -98,6 +98,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
   function noReg(){
     console.log('noReg');
 
+    //Improvement: check for 'given-name-no-corr' if the user uses that phrasing
     let names = app.getArgument('given-name-no');
     let nameLen = names.length;
     let date = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'date-time-no');
