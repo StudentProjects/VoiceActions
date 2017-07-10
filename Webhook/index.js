@@ -20,14 +20,16 @@ exports.schoolAgent = function schoolAgent (req, res) {
 
   const TEST_PROMPTS = ["This is a smaple response from your webhook!", "You are now connected to the webhook!", "This is the webhook speaking :)"];
   const HELP_PROMPTS = ["Try checking out the news at the school this week or maybe one of your kids needs to be called in sick."];
-  const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Who is ill?", "Who is the poor sick bastard?"];
-  const YES_REGISTERED_PROMPTS = ["Awesome! I've taken care of that now. Was there anything else?"];
-  const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What would you like to change?"];
-  const NEWS_PROMPTS = ["Something cool is happening on friday!!", "Mrs. Teacherson has been promoted to headmistress."];
-  const GOODBYE_PROMPTS = ["Goodbye!", "Have a good day!", "Have a nice day!"];
+  const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Of course, who is ill?", "Who is the poor sick bastard?", "Sorry to hear that. Who would you like to call in sick?"];
+  const ILLNESS_PROMPT_STARTS = ["I'll make a note that "];
+  const ILLNESS_PROMPT_ENDS = ["Is that right?", "Was that right?"];
+  const YES_REGISTERED_PROMPTS = ["I've taken care of that now. Was there anything else?", "I've made a note of that. Did you want to do anything else?"];
+  const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What would you like to change?", "What did I get wrong?"];
+  const NEWS_PROMPTS = ["Something cool is happening on friday, stay tuned!", "Mrs. Teacherson has been promoted to headmistress.", "Your kids have a bake-sale coming up this Saturday."];
+  const GOODBYE_PROMPTS = ["Goodbye!", "Have a good day then!", "Have a nice day!"];
 
-  const NO_INPUT_PROMPTS = ["What was that?1", "What was that?2", "What was that?3"];
-  const SICK_NO_INPUT_PROMPTS = ["Are you gonna call someone in sick or what??", "Have I gone deaf or you mute?", "Goodbye you didn't say anything"];
+  const NO_INPUT_PROMPTS = ["What was that?", "Come again?", "We can stop here, come back later!"];
+  const SICK_NO_INPUT_PROMPTS = ["Who was it that was ill?", "Who did you want to call in sick?", "I couldn't hear you so I won't register anyone as sick."];
 
   let actionMap = new Map();
   actionMap.set(TEST_INTENT, getSample);
@@ -137,28 +139,30 @@ exports.schoolAgent = function schoolAgent (req, res) {
 
   /***INTERNAL FUNCTIONS***/
   function buildIllnessPrompt(names, nameLen, date){
-    let prompt = "";
-      for(var i = 0 ; i < nameLen ; i++){
-        prompt += names[i];
+    let prompt = getRandomPrompt(ILLNESS_PROMPT_STARTS);
+      
+    for(var i = 0 ; i < nameLen ; i++){
+      prompt += names[i];
 
-        if(nameLen > 1){
-          if(i == nameLen-1){
-            prompt += " are";
-          }
-          else if(i == nameLen-2){
-            prompt += " and ";
-          }
-          else{
-            prompt += ", ";
-          }
+      if(nameLen > 1){
+        if(i == nameLen-1){
+          prompt += " are";
+        }
+        else if(i == nameLen-2){
+          prompt += " and ";
         }
         else{
-          prompt += " is";
+          prompt += ", ";
         }
       }
-      prompt += " ill " + date + ". ";
-      prompt += "Is that right?";
-      return prompt;
+      else{
+        prompt += " is";
+      }
+    }
+
+    prompt += " ill" + date + ". ";
+    prompt += getRandomPrompt(ILLNESS_PROMPT_ENDS);
+    return prompt;
   }
 
   function getRandomPrompt(array){
