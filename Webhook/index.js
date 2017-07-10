@@ -15,17 +15,17 @@ exports.schoolAgent = function schoolAgent (req, res) {
   const HELP_INTENT = "help.get";
   const YES_REGISTER_INTENT = "illness.yes";
   const NO_REGISTER_INTENT = "illness.no";
-  //const NEWS_INTENT = "news.get";
   const GOODBYE_INTENT = "goodbye.message"
+  const NEWS_INTENT = "news.get";
 
-  const REGISTRATION_CONTEXT = "registration";
+  //const REGISTRATION_CONTEXT = "registration";
   const REGISTER_YES_NO_CONTEXT = "register_yes_no";
 
   const TEST_PROMPTS = ["This is a smaple response from your webhook!", "You are now connected to the webhook!", "This is the webhook speaking :)"];
   const HELP_PROMPTS = ["You could check out what's going on at the school the week!", "Some cool stuff is happpening, take a look at the news!"];
   const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Who is ill?", "Who is the poor sick bastard?"];
   const YES_REGISTERED_PROMPTS = ["Awesome! I've taken care of that now. Was there anything else?"];
-  const NO_REGISTERED_CORRECTION_PROMPTS = ["So *with new changes*. Is that right?"];
+  //const NO_REGISTERED_CORRECTION_PROMPTS = ["So *with new changes*. Is that right?"];
   const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What would you like to change?"];
   const GOODBYE_PROMPTS = ["Goodbye!", "Have a good day!", "Have a nice day!"];
 
@@ -41,7 +41,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
   actionMap.set(YES_REGISTER_INTENT, yesReg);
   actionMap.set(NO_REGISTER_INTENT, noReg);
   actionMap.set(GOODBYE_INTENT, goodbyeMessage);
-  //actionMap.set(NEWS_INTENT, getNews);
+  actionMap.set(NEWS_INTENT, getNews);
   app.handleRequest(actionMap);
 
   /***INTENT FUNCTIONS***/
@@ -74,14 +74,14 @@ exports.schoolAgent = function schoolAgent (req, res) {
       return;
     }
     else{
-      let date = req.body.result.fulfillment.speech;
+      let date = "today";
       //let date = app.getArgument('date-time');
-      if(!date){
-        date = "today";
+      if(req.body.result.fulfillment.speech){
+        date = req.body.result.fulfillment.speech;
       }
 
       let prompt = buildIllnessPrompt(names, nameLen, date);
-      app.setContext(REGISTER_YES_NO_CONTEXT);
+      //app.setContext(REGISTER_YES_NO_CONTEXT);
       ask(app, prompt, NO_INPUT_PROMPTS);
       return;
     }
@@ -100,18 +100,38 @@ exports.schoolAgent = function schoolAgent (req, res) {
   function noReg(){
     console.log('noReg');
 
-    let names = app.getArgument('given-name');
+    let names = app.getArgument('given-name-no');
+    let nameLen = names.length;
+    let date = app.getArgument('date-time-no');
 
-    if(names){
-      ask(app, getRandomPrompt(NO_REGISTERED_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
-    }
-    else{
+    if(!date && nameLen == 0){
       ask(app, getRandomPrompt(NO_REGISTERED_NO_CORRECTION_PROMPTS), NO_INPUT_PROMPTS);
+      return;
     }
+
+    if(date && nameLen > 0){
+      let prompt = buildIllnessPrompt(names, nameLen, date);
+      ask(app, prompt, NO_INPUT_PROMPTS);
+      return;
+    }
+
+    if(!date){
+      date = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'date-time').original;
+    }
+    if(nameLen == 0){
+      names = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'given-name').value;
+    }
+
+    let prompt = buildIllnessPrompt(names, nameLen, date);
+
+    ask(app, prompt, NO_INPUT_PROMPTS);
   }
-  //function getNews(){
-  //  tell(app, "Something cool is happening on friday!!");
-  //}
+  
+  function getNews(){
+    console.log("getNews");
+    tell(app, "Something cool is happening on friday!!");
+  }
+  
   function goodbyeMessage(){
     console.log('goodbyeMessage');
     tell(app, getRandomPrompt(GOODBYE_PROMPTS));
