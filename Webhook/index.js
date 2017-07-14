@@ -1,35 +1,36 @@
+'use strict';
 const ApiAiApp = require('actions-on-google').ApiAiApp;
+
+const TEST_INTENT = "hooktest.hello";
+const TIME_INTENT = "time.get";
+const LENGTH_INTENT = "length.get";
+const ILLNESS_INTENT = "illness.register";
+const HELP_INTENT = "help.get";
+const YES_REGISTER_INTENT = "illness.yes";
+const NO_REGISTER_INTENT = "illness.no";
+const GOODBYE_INTENT = "goodbye.message"
+const NEWS_INTENT = "news.get";
+
+const REGISTER_YES_NO_CONTEXT = "register_yes_no";
+
+const TEST_PROMPTS = ["This is a smaple response from your webhook!", "You are now connected to the webhook!", "This is the webhook speaking :)"];
+const HELP_PROMPTS = ["<speak>Try checking out the news at the school this week <break time='1s' /> or maybe one of your kids needs to be called in sick.</speak>"];
+const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Of course, who is ill?", "Sorry to hear that. Who would you like to call in sick?"];
+const ILLNESS_PROMPT_STARTS = ["I'll make a note that "];
+const ILLNESS_PROMPT_ENDS = ["Is that right?", "Was that right?"];
+const YES_REGISTERED_PROMPTS = ["I've taken care of that now. Was there anything else?", "I've made a note of that. Did you want to do anything else?"];
+const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What should I have put down?", "What would you have me write down instead?"];
+const NEWS_PROMPTS = ["Something cool is happening on friday, stay tuned!", "Mrs. Teacherson has been promoted to headmistress.", "Your kids have a bake-sale coming up this Saturday."];
+const GOODBYE_PROMPTS = ["Goodbye!", "Have a good day then!", "Have a nice day!"];
+
+const NO_INPUT_PROMPTS = ["What was that?", "Come again?", "We can stop here, come back later!"];
+const SICK_NO_INPUT_PROMPTS = ["Who was it that was ill?", "Who did you want to call in sick?", "I couldn't hear you so I won't register anyone as sick."];
 
 exports.schoolAgent = function schoolAgent (req, res) {
   console.log('Headers: ' + JSON.stringify(req.headers));
   console.log('Body: ' + JSON.stringify(req.body));
 
   const app = new ApiAiApp({request: req, response: res});
-
-  const TEST_INTENT = "hooktest.hello";
-  const TIME_INTENT = "time.get";
-  const LENGTH_INTENT = "length.get";
-  const ILLNESS_INTENT = "illness.register";
-  const HELP_INTENT = "help.get";
-  const YES_REGISTER_INTENT = "illness.yes";
-  const NO_REGISTER_INTENT = "illness.no";
-  const GOODBYE_INTENT = "goodbye.message"
-  const NEWS_INTENT = "news.get";
-
-  const REGISTER_YES_NO_CONTEXT = "register_yes_no";
-
-  const TEST_PROMPTS = ["This is a smaple response from your webhook!", "You are now connected to the webhook!", "This is the webhook speaking :)"];
-  const HELP_PROMPTS = ["<speak>Try checking out the news at the school this week <break time='1s' /> or maybe one of your kids needs to be called in sick.</speak>"];
-  const ILLNESS_ASK_FOR_NAME_PROMPTS = ["Of course, who is ill?", "Sorry to hear that. Who would you like to call in sick?"];
-  const ILLNESS_PROMPT_STARTS = ["I'll make a note that "];
-  const ILLNESS_PROMPT_ENDS = ["Is that right?", "Was that right?"];
-  const YES_REGISTERED_PROMPTS = ["I've taken care of that now. Was there anything else?", "I've made a note of that. Did you want to do anything else?"];
-  const NO_REGISTERED_NO_CORRECTION_PROMPTS = ["What should I have put down?", "What would you have me put down instead?"];
-  const NEWS_PROMPTS = ["Something cool is happening on friday, stay tuned!", "Mrs. Teacherson has been promoted to headmistress.", "Your kids have a bake-sale coming up this Saturday."];
-  const GOODBYE_PROMPTS = ["Goodbye!", "Have a good day then!", "Have a nice day!"];
-
-  const NO_INPUT_PROMPTS = ["What was that?", "Come again?", "We can stop here, come back later!"];
-  const SICK_NO_INPUT_PROMPTS = ["Who was it that was ill?", "Who did you want to call in sick?", "I couldn't hear you so I won't register anyone as sick."];
 
   let actionMap = new Map();
   actionMap.set(TEST_INTENT, getSample);
@@ -98,7 +99,6 @@ exports.schoolAgent = function schoolAgent (req, res) {
   function noReg(){
     console.log('noReg');
 
-    //Improvement: check for 'given-name-no-corr' if the user uses that phrasing
     let names = app.getArgument('given-name-no');
     let nameLen = names.length;
     let date = app.getContextArgument(REGISTER_YES_NO_CONTEXT, 'date-time-no');
@@ -144,7 +144,7 @@ exports.schoolAgent = function schoolAgent (req, res) {
     tell(app, getRandomPrompt(GOODBYE_PROMPTS));
   }
 
-  /***INTERNAL FUNCTIONS***/
+  /***UTILITY FUNCTIONS***/
   function buildIllnessPrompt(names, nameLen, date){
     let prompt = getRandomPrompt(ILLNESS_PROMPT_STARTS);
       
